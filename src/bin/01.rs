@@ -1,9 +1,17 @@
 pub fn part_one(input: &str) -> Option<u32> {
-    None
+    Some(input.split("\n\n").fold(0, |acc, s| {
+        acc.max(s.split('\n').map(|s| s.parse::<u32>().unwrap()).sum())
+    }))
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    let mut snacks = input
+        .split("\n\n")
+        .map(|s| s.split('\n').map(|s| s.parse::<u32>().unwrap()).sum())
+        .collect::<Vec<_>>();
+
+    snacks.sort_unstable();
+    Some(snacks[snacks.len() - 3..].iter().sum())
 }
 
 fn main() {
@@ -19,12 +27,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_one(&input), None);
+        assert_eq!(part_one(&input), Some(24000));
     }
 
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 1);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(45000));
     }
 }
