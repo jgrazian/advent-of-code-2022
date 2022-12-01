@@ -10,7 +10,7 @@ pub fn part_two(input: &str) -> Option<u32> {
             .split("\n\n")
             .fold([0; 3], |acc, s| {
                 match s.split('\n').map(|s| s.parse::<u32>().unwrap()).sum() {
-                    x if x > acc[0] => [x, acc[2], acc[1]],
+                    x if x > acc[0] => [x, acc[0], acc[1]],
                     x if x > acc[1] => [acc[0], x, acc[1]],
                     x if x > acc[2] => [acc[0], acc[1], x],
                     _ => acc,
