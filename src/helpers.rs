@@ -2,6 +2,8 @@
  * Use this file if you want to extract helpers from your solutions.
  * Example import from this file: `use advent_of_code::helpers::example_fn;`.
  */
+
+#[derive(Debug, Clone)]
 pub struct Grid {
     width: usize,
     height: usize,
@@ -38,6 +40,23 @@ impl Grid {
             .map(|(i, v)| (self.index_to_coord(i), v))
     }
 
+    pub fn is_valid_coord(&self, xy: (isize, isize)) -> bool {
+        let x = xy.0;
+        let y = xy.1;
+
+        x >= 0 && x < self.width as isize && y >= 0 && y < self.height as isize
+    }
+
+    pub fn find(&self, value: u8) -> Option<(usize, usize)> {
+        self.elements.iter().enumerate().find_map(|(i, v)| {
+            if v == &value {
+                Some(self.index_to_coord(i))
+            } else {
+                None
+            }
+        })
+    }
+
     pub fn row(&self, row: usize) -> impl Iterator<Item = &u8> + '_ {
         self.elements[row * self.width..row * self.width + self.width].iter()
     }
@@ -52,6 +71,23 @@ impl Grid {
 
     pub fn columns(&self) -> impl Iterator<Item = impl Iterator<Item = &u8>> + '_ {
         (0..self.width).into_iter().map(|c| self.column(c))
+    }
+
+    pub fn manhattan_neighbors(
+        &self,
+        xy: (usize, usize),
+    ) -> impl Iterator<Item = (usize, usize)> + '_ {
+        let x = xy.0 as isize;
+        let y = xy.1 as isize;
+        [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+            .into_iter()
+            .filter_map(|uv| {
+                if self.is_valid_coord(uv) {
+                    Some((uv.0 as usize, uv.1 as usize))
+                } else {
+                    None
+                }
+            })
     }
 
     pub fn cross_from_coord(
