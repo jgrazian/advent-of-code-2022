@@ -1,4 +1,9 @@
-fn parse(input: &str) -> (Vec<Vec<char>>, Vec<(usize, usize, usize)>) {
+struct Parsed {
+    stacks: Vec<Vec<char>>,
+    instructions: Vec<(usize, usize, usize)>,
+}
+
+fn parse(input: &str) -> Parsed {
     let mut stacks = (0..10)
         .into_iter()
         .map(|_| Vec::with_capacity(32))
@@ -45,11 +50,16 @@ fn parse(input: &str) -> (Vec<Vec<char>>, Vec<(usize, usize, usize)>) {
     }
 
     stacks.iter_mut().for_each(|v| v.reverse());
-    (stacks, instructions)
+    Parsed {
+        stacks,
+        instructions,
+    }
 }
 
 pub fn part_one(input: &str) -> Option<String> {
-    let (mut crates, moves) = parse(input);
+    let parsed = parse(input);
+    let mut crates = parsed.stacks;
+    let moves = parsed.instructions;
 
     for (n, from, to) in moves {
         for _ in 0..n {
@@ -64,7 +74,9 @@ pub fn part_one(input: &str) -> Option<String> {
 }
 
 pub fn part_two(input: &str) -> Option<String> {
-    let (mut crates, moves) = parse(input);
+    let parsed = parse(input);
+    let mut crates = parsed.stacks;
+    let moves = parsed.instructions;
 
     for (n, from, to) in moves {
         let range = crates[from].len() - n..;

@@ -1,24 +1,43 @@
 pub fn part_one(input: &str) -> Option<u32> {
-    Some(input.split("\n\n").fold(0, |acc, s| {
-        acc.max(s.split('\n').map(|s| s.parse::<u32>().unwrap()).sum())
-    }))
+    let mut sum = 0;
+    let mut max = 0;
+    for line in input.lines() {
+        if line.is_empty() {
+            max = max.max(sum);
+            sum = 0;
+            continue;
+        }
+        sum += line.trim().parse::<u32>().unwrap();
+    }
+    max = max.max(sum);
+
+    Some(max)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    Some(
-        input
-            .split("\n\n")
-            .fold([0; 3], |acc, s| {
-                match s.split('\n').map(|s| s.parse::<u32>().unwrap()).sum() {
-                    x if x > acc[0] => [x, acc[0], acc[1]],
-                    x if x > acc[1] => [acc[0], x, acc[1]],
-                    x if x > acc[2] => [acc[0], acc[1], x],
-                    _ => acc,
-                }
-            })
-            .iter()
-            .sum(),
-    )
+    let mut sum = 0;
+    let mut max = [0; 3];
+    for line in input.lines() {
+        if line.is_empty() {
+            max = match sum {
+                x if x > max[0] => [x, max[0], max[1]],
+                x if x > max[1] => [max[0], x, max[1]],
+                x if x > max[2] => [max[0], max[1], x],
+                _ => max,
+            };
+            sum = 0;
+            continue;
+        }
+        sum += line.trim().parse::<u32>().unwrap();
+    }
+    max = match sum {
+        x if x > max[0] => [x, max[0], max[1]],
+        x if x > max[1] => [max[0], x, max[1]],
+        x if x > max[2] => [max[0], max[1], x],
+        _ => max,
+    };
+
+    Some(max.iter().sum())
 }
 
 fn main() {

@@ -78,7 +78,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         reg = op.apply(reg)
     }
 
-    Some(0)
+    None
 }
 
 fn main() {
